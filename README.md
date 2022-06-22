@@ -1,4 +1,4 @@
-## FORMULARIOS
+# FORMULARIOS
 
 ---
 
@@ -6,7 +6,7 @@ Existen dos tipos de enfoque a la hora de crear formularios; enfoque por templat
 
 La diferencia entre uno y otro se encuentra en que el enfoque por template carga la lógica de su funcionamiento en el archivo **.HTML**, mientras que el enfoque por controlador lo hace en el archivo **.ts**
 
-##Template Driven
+## Template Driven
 
 Template Driven nos permite manejar formularios sencillos, donde podremos tener acceso a los campos y configurarles validaciones sencillas(Se pueden realizar otras más complejas, pero no es la naturaleza de este formulario)
 
@@ -44,7 +44,7 @@ Template Driven nos permite manejar formularios sencillos, donde podremos tener 
   <pre>{{ miFormulario.value }}</pre>
   ```
 
-###Validaciones
+### Validaciones
 
 Las validaciones, como se ha comentado anteriormente, son bastante sencillas en este tipo de formularios.
 Podemos Indicar si un imput es requerido, tiene que tener un valor máximo o mínimo y poco más.  
@@ -66,7 +66,7 @@ Podemos utilizar mensajes de error para mostrar indicaciones de fallos en los ca
 >
 ```
 
-###ViewChild
+### ViewChild
 
 - A la hora de manejar el formulario y poder "alijerar" la carga en el template, podemos enlazar el formulario a un atributo del controlador utilizando el decorador **ViewChild**
 
