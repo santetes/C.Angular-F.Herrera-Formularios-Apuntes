@@ -15,7 +15,11 @@ import { NgForm } from '@angular/forms';
 export class BasicosComponent implements OnInit {
   @ViewChild('miFormulario') miFormulario!: NgForm;
 
-  objetoRandom: string = '';
+  valorInicial = {
+    producto: 'valor por defecto',
+    precio: 0,
+    existencias: 0,
+  };
 
   constructor() {}
 

@@ -66,6 +66,8 @@ Podemos utilizar mensajes de error para mostrar indicaciones de fallos en los ca
 >
 ```
 
+Se pueden crear directivas personalizadas para el manejo de errores en el formulario. En el [video del curso 239](https://www.udemy.com/course/angular-fernando-herrera/learn/lecture/24065188#questions) se puede ver un ejemplo de su creación. Más adelante se trabajaran las directivas personalizadas en profundidad
+
 ### ViewChild
 
 - A la hora de manejar el formulario y poder "alijerar" la carga en el template, podemos enlazar el formulario a un atributo del controlador utilizando el decorador **ViewChild**
@@ -97,3 +99,45 @@ nombreValido(): boolean {
   }
 
 ```
+
+### Reset de formulario y/o carga de valores por defecto en los inputs
+
+Es posible establecer valores por defecto en el formulario, bien cuando pulsamos en el botón de guardar (submit), o bien simplemente a la carga del formulario.
+Existen varias formas de hacer esto:
+
+- Reseteando el formulario al pulsar guardar
+  ```javascript
+    guardar() {
+    console.log('Posteo Correcto');
+    this.miFormulario.resetForm();
+    }
+  ```
+- Reseteo y carga de valores iniciales al guardar
+  ```javascript
+    guardar() {
+    console.log('Posteo Correcto');
+    this.miFormulario.resetForm({
+      producto: 'valor inicial',
+      precio: 0,
+      existencias: 0
+    });
+    }
+  ```
+- Utilizando el ngModel en el Template
+  - Creamos en controlador un objeto con los valores iniciales
+    ```javascript
+    valorInicial = {
+      producto: "valor por defecto",
+      precio: 0,
+      existencias: 0,
+    };
+    ```
+  - Indicamos en el template mediante [ngModel] el valor inicial
+    ```html
+    <input type="text" [ngModel]="valorInicial.producto" name="producto" />
+    ```
+
+### Input's dinámicos y switches
+
+- Ejemplo de creación de inputs dinámicos en el [curso de angular 242](https://www.udemy.com/course/angular-fernando-herrera/learn/lecture/24066590#questions)
+- Ejemplo de manejo de switches en el [curso de angular 245](https://www.udemy.com/course/angular-fernando-herrera/learn/lecture/24079036#questions)
