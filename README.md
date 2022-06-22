@@ -224,10 +224,16 @@ Este enfoque de formularios nos brindan una forma más robusta de creación y ge
   ```
 
 - El mecanismo normal de los formularios web, es que sin la necesidad de tocar ningún input, si clickamos directamente en _submit_, nos tiene que mostrar los erroes propios de cada campo. Para esto hay un sencillo tip que habilita este comportamiento
+
   ```javascript
-  guardar() {
+    guardar() {
     if (this.miFormulario.invalid) {
       this.miFormulario.markAllAsTouched();
       return;
     }
+
+    console.log(this.miFormulario.value);
+    this.miFormulario.reset();
+  }
+
   ```
