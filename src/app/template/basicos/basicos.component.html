@@ -1,1 +1,79 @@
-<p>basicos works!</p>
+<h2>Template: Básicos</h2>
+<hr />
+
+<div class="row">
+  <div class="col">
+    <form (ngSubmit)="guardar()" #miFormulario="ngForm" autocomplete="off">
+      <!-- Campo de producto -->
+      <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">Productos</label>
+        <div class="col-sm-9">
+          <input
+            type="text"
+            ngModel
+            name="producto"
+            class="form-control"
+            placeholder="Nombre del producto"
+            required
+            minlength="3"
+          />
+          <span *ngIf="nombreValido()" class="form-text text-danger">Debe de ser de 3 letras</span>
+        </div>
+      </div>
+      <!-- Campo de precio -->
+      <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">Precios</label>
+        <div class="col-sm-9">
+          <input
+            type="number"
+            ngModel
+            name="precio"
+            class="form-control"
+            required="true"
+            placeholder="Precio del producto"
+          />
+          <span *ngIf="precioValido()" class="form-text text-danger"
+            >El precio debe ser 0 o mayor</span
+          >
+        </div>
+      </div>
+      <!-- Campo de existencias -->
+      <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">Existencias</label>
+        <div class="col-sm-9">
+          <input
+            type="number"
+            ngModel
+            name="existencias"
+            required="true"
+            min="10"
+            class="form-control"
+            placeholder="Existencias del producto"
+          />
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="row">
+        <div class="col">
+          <button type="submit" class="btn btn-primary float-end" [disabled]="compruebaForm()">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <span>valid</span>
+    <pre>{{ miFormulario.valid }}</pre>
+    <span>pristine</span>
+    <pre>{{ miFormulario.pristine | json }}</pre>
+    <span>Touched</span>
+    <pre>{{ miFormulario.touched | json }}</pre>
+    <span>value</span>
+    <pre>{{ miFormulario.value | json }}</pre>
+  </div>
+</div>

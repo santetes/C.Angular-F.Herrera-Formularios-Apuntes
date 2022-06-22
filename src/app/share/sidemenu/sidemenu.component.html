@@ -1,1 +1,40 @@
-<p>sidemenu works!</p>
+<h2>Template</h2>
+<hr />
+
+<ul class="list-group">
+  <li
+    *ngFor="let item of templateMenu"
+    [routerLink]="item.ruta"
+    class="list-group-item"
+    routerLinkActive="active"
+  >
+    {{ item.texto }}
+  </li>
+</ul>
+<br />
+<h2>Reactive</h2>
+<hr />
+
+<ul class="list-group">
+  <li
+    *ngFor="let item of reactiveMenu"
+    [routerLink]="item.ruta"
+    class="list-group-item"
+    routerLinkActive="active"
+  >
+    {{ item.texto }}
+  </li>
+</ul>
+<br />
+<h2>Validaciones</h2>
+<hr />
+<ul class="list-group">
+  <li
+    *ngFor="let item of authMenu"
+    [routerLink]="item.ruta"
+    class="list-group-item"
+    routerLinkActive="active"
+  >
+    {{ item.texto }}
+  </li>
+</ul>
