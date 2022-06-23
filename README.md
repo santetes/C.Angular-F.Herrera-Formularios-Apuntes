@@ -148,7 +148,7 @@ Existen varias formas de hacer esto:
 
 Este enfoque de formularios nos brindan una forma más robusta de creación y gestión de los formularios.
 
-### Primeros Pasos
+### FormGroup
 
 - Importamos el Modulo **reactiveFormsModule** en el modulo correspondiente
 
@@ -223,6 +223,10 @@ Este enfoque de formularios nos brindan una forma más robusta de creación y ge
   }
   ```
 
+### Tips
+
+- Según la documentación de Angular, el sítio adecuado para crear el FormGroup es al inicio de la clase que lo implemente, por encima del contructor.
+
 - El mecanismo normal de los formularios web, es que sin la necesidad de tocar ningún input, si clickamos directamente en _submit_, nos tiene que mostrar los erroes propios de cada campo. Para esto hay un sencillo tip que habilita este comportamiento
 
   ```javascript
@@ -237,3 +241,49 @@ Este enfoque de formularios nos brindan una forma más robusta de creación y ge
   }
 
   ```
+
+- Tambien es conveniente la utilización de `miFormulario.reset()` en lugar de `miFormulario.set()` si queremos cargar valores en el formulario. Se haría de la siguiente manera:
+  ```javascript
+  this.miFormulario.reset({
+      nombre: 'nombre por defecto',
+      precio: 0,
+      existencias: 0
+    });
+  }
+  ```
+  La ventanja de hacerlo de este modo respecto al de `set()`, es que `set()` obliga a pasarle todos los atributos del objeto mientras que `reset()` no.
+
+### FormArray
+
+- Dentro de un **FormGroup**, puede haber un **FormArray**. Esto no es mas que un array de **FormGroup**'s
+
+```javascript
+miFormulario: FormGroup = this.fb.group({
+  nombre: [, [Validators.required, Validators.minLength(3)]],
+  favoritos: this.fb.array(
+    [
+      ["MetalGear", Validators.minLength(3)],
+      ["CrashBandiCot", Validators.minLength(3)],
+    ],
+    Validators.required
+  ),
+});
+```
+
+- Luego en el Html, debemos indicar que bloque es el que va a contener la información de este formArray mediante `formArrayName="favoritos"` y luego dentro de este el bloque que se va a repetir de la siguiente manera:
+
+  ```html
+  <div class="col-sm-9" formArrayName="favoritos">
+    <div *ngFor="let favorito of favoritosArr.controls; let i = index" class="input-group mb-1">
+      <input [formControlName]="i" type="text" class="form-control" />
+      <button type="button" (click)="eliminar(i)" class="btn btn-outline-danger">Eliminar</button>
+    </div>
+  </div>
+  ```
+
+  - Si observamos el codigo superior, podemos observar que el objeto que se itera es `favoritosArr`. Este objeto se crea mediante un `get` en el controlador para facilitira el acceso e iteración del array:
+    ```javascript
+    get favoritosArr() {
+    return this.miFormulario.get('favoritos') as FormArray;
+    }
+    ```
