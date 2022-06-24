@@ -9,14 +9,12 @@
       <div class="form-check">
         <input
           class="form-check-input"
+          id="radioMasculino"
           type="radio"
           value="M"
           formControlName="genero"
-          id="radioMasculino"
         />
-        <label class="form-check-label" for="flexRadioDefault1">
-          Masculino
-        </label>
+        <label class="form-check-label" for="radioMasculino"> Masculino </label>
       </div>
       <div class="form-check">
         <input
@@ -26,9 +24,7 @@
           formControlName="genero"
           id="radioFemenino"
         />
-        <label class="form-check-label" for="flexRadioDefault2">
-          Femenino
-        </label>
+        <label class="form-check-label" for="radioFemenino"> Femenino </label>
       </div>
     </div>
   </div>
@@ -56,22 +52,14 @@
         type="checkbox"
         id="flexCheckDefault"
       />
-      <label class="form-check-label" for="flexCheckDefault">
-        Términos y condiciones
-      </label>
+      <label class="form-check-label" for="flexCheckDefault"> Términos y condiciones </label>
     </div>
   </div>
 
   <!-- Botón Submit -->
   <div class="row">
     <div class="col">
-      <button
-        type="button"
-        (click)="guardar()"
-        class="btn btn-primary float-end"
-      >
-        Enviar
-      </button>
+      <button type="button" (click)="guardar()" class="btn btn-primary float-end">Enviar</button>
     </div>
   </div>
 </form>

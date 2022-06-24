@@ -281,9 +281,48 @@ miFormulario: FormGroup = this.fb.group({
   </div>
   ```
 
-  - Si observamos el codigo superior, podemos observar que el objeto que se itera es `favoritosArr`. Este objeto se crea mediante un `get` en el controlador para facilitira el acceso e iteración del array:
+  - Si observamos el codigo superior, podemos observar que el objeto que se itera es `favoritosArr`. Este objeto se crea mediante un `getter` en el controlador para facilitira el acceso e iteración del array:
     ```javascript
     get favoritosArr() {
     return this.miFormulario.get('favoritos') as FormArray;
     }
     ```
+
+### Agregar/Eliminar un nuevo FormControl a un FormArray
+
+- En este punto se mostrará como agregar el contenido de un input (FormControl) a un FormArray.
+- Para ello tenemos que tener en nuestro controlador un objeto formControl
+
+  ```javascript
+  nuevoFavorito: FormControl = this.fb.control("", Validators.required);
+  ```
+
+- A continuación tenemos que tener en nuestro html un input referenciado a este FormControl
+  ```html
+  <input
+    type="text"
+    [formControl]="nuevoFavorito"
+    class="form-control"
+    (keyup.enter)="agregarFavorito()"
+    placeholder="Agregar favorito"
+  />
+  ```
+- Luego mediante deberemos tener un método en el controlador que realice la inserción
+
+  ```javascript
+  agregarFavorito() {
+    if (this.nuevoFavorito.invalid) {
+      return;
+    }
+    this.favoritosArr.push(this.fb.control(this.nuevoFavorito.value, [Validators.required]));
+
+    this.nuevoFavorito.reset();
+  }
+  ```
+
+- Los FormArray disponen de un metodo `removeAt(index)` que nos permiten eliminiar FormControls de los FormArray
+  ```javascript
+  eliminar(indice: number) {
+    this.favoritosArr.removeAt(indice);
+  }
+  ```
