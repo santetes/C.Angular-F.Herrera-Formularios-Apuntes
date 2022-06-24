@@ -26,6 +26,16 @@
         />
         <label class="form-check-label" for="radioFemenino"> Femenino </label>
       </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          value="SN"
+          formControlName="genero"
+          id="sinDeterminar"
+        />
+        <label class="form-check-label" for="sinDeterminar"> Sin determinar </label>
+      </div>
     </div>
   </div>
 
@@ -66,9 +76,15 @@
 
 <h5>Valor del formulario</h5>
 <pre>{{ miFormulario.value | json }}</pre>
+<h5>Errores en campos</h5>
+<h6>Género</h6>
+<pre>{{ miFormulario.controls["genero"]?.errors | json }}</pre>
+
+<h6>condiciones</h6>
+<pre>{{ miFormulario.controls["condiciones"]?.errors | json }}</pre>
 <h5>Persona</h5>
 <pre>{{ persona | json }}</pre>
 <h5>Valido</h5>
-<pre>{{ miFormulario.valid | json }}</pre>
+<pre>{{ miFormulario.errors | json }}</pre>
 <!-- <h5>Condiciones</h5>
 <pre>{{ miFormulario.valid | json }}</pre> -->

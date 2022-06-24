@@ -225,6 +225,7 @@ Este enfoque de formularios nos brindan una forma más robusta de creación y ge
 
 ### Tips
 
+- `miFormulario.value` nos mostrará un objeto con todos los campos del formulario y su valor actual
 - Según la documentación de Angular, el sítio adecuado para crear el FormGroup es al inicio de la clase que lo implemente, por encima del contructor.
 
 - El mecanismo normal de los formularios web, es que sin la necesidad de tocar ningún input, si clickamos directamente en _submit_, nos tiene que mostrar los erroes propios de cada campo. Para esto hay un sencillo tip que habilita este comportamiento
@@ -326,3 +327,39 @@ miFormulario: FormGroup = this.fb.group({
     this.favoritosArr.removeAt(indice);
   }
   ```
+
+### Manejo de switches
+
+- Creamos en la parte del controlador el formulario con los switchs implicados.
+
+  - **Genero** será de tipo **radio**.
+  - **Notificaciones** será de tipo **switch**
+  - **condiciones** será de tipo **check**
+
+  ```javascript
+  miFormulario: FormGroup = this.fb.group({
+    genero: ["M", Validators.required],
+    notificaciones: [true],
+    condiciones: [false, Validators.requiredTrue],
+  });
+  ```
+
+- Luego en el Html configuraremos los imputs con su **FormControlName** correspondiente
+  - Hay que observar que los **radioButton** de genero tienen los dos el mismo **FormControlName** para que **angular** detecte que pertenecen al mismo grupo y permita la selección de uno u otro.
+  - En el ejemplo utilizado se ha hecho uso de **Bootstrap** con su configuración y clases. Hay que tener la precaución de sustituir `name` por `FormControlName`
+- **Tip:** Observemos el **validator de condiciones**. Este está puesto en **requiredTrue**. Esto quiere decir que no es que tenga que tener obligatoriamente un valor, sino que este tiene que ser **true**.
+
+### Manejo de errores y estados en Formulario y en FormControl
+
+- A la hora de ver que es lo que está ocurriendo en el formulario, Angular nos brinda una serie propiedades para comprobar su estado.
+- Revisar la [documentación de Angular](https://angular.io/api/forms/AbstractControl) para ver toda la información. Un ejemplo de propiedades más usadas son: `valid, invalid, pristine, touched`
+- Luego, además podemos ver los errores que existen tanto a nivel de formulario completo como a niver de formControl en concreto
+
+  ```javascript
+  miFormulario.errors;
+  miFormulario.controls["condiciones"]?.errors;
+  ```
+
+---
+
+## Validaciones Formularios Reactivos
