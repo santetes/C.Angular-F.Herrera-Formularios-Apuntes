@@ -11,7 +11,11 @@ import { FormGroup, FormBuilder, Validators, FormControl, ValidationErrors } fro
 export class RegistroComponent implements OnInit {
   miFormulario: FormGroup = this.fb.group(
     {
-      nombre: ['', [Validators.required, Validators.pattern(this.validacionService.patronNombre)]],
+      nombre: [
+        '',
+        [Validators.required, Validators.pattern(this.validacionService.patronNombre)],
+        ,
+      ],
       email: [
         '',
         [Validators.required, Validators.pattern(this.validacionService.patronEmail)],

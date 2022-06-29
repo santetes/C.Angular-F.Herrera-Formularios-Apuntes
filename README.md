@@ -308,7 +308,7 @@ miFormulario: FormGroup = this.fb.group({
     placeholder="Agregar favorito"
   />
   ```
-- Luego mediante deberemos tener un método en el controlador que realice la inserción
+- Luego deberemos tener un método en el controlador que realice la inserción
 
   ```javascript
   agregarFavorito() {
@@ -320,6 +320,8 @@ miFormulario: FormGroup = this.fb.group({
     this.nuevoFavorito.reset();
   }
   ```
+
+  - Si se observa el código anterior, se puede ver que no se incluye el própio "nuevoFavorito", sino que se inserta un nuevo FormControl con los datos del nuevoFavorito. Esto es porque sino lo hacemos así, el nuevoFavorito, al **pasarlo por referencia**, si se modifica tambien lo hará el que se encuentre dentro del array
 
 - Los FormArray disponen de un metodo `removeAt(index)` que nos permiten eliminiar FormControls de los FormArray
   ```javascript
@@ -362,4 +364,127 @@ miFormulario: FormGroup = this.fb.group({
 
 ---
 
-## Validaciones Formularios Reactivos
+## Validaciones Formularios Reactivos - Síncronas
+
+### Validaciones contra expresiones regulares
+
+- Validators dispone de un método llamado `Validators.pattern(patronNombre)`
+- Para el caso que nos ocupa (nombre espacio y apellido) con este patrón es suficiente:
+  ` public patronNombre: string = '([a-zA-Z]+) ([a-zA-Z]+)'`
+- Tambien podemos validar un **email** con el siguiente patrón:
+  `public patronEmail: string = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';`
+
+### Validaciones personalizadas
+
+#### Validación a nivel de FormControl
+
+- En lugar de `Validators.validacion`, se puede pasar una función personalizada para hacer la comprobación.
+- Hay que mandar la referencia a la función (sin paréntesis)
+  `username: ['', [Validators.required, this.validacionService.noPuedeSerStrider]],`
+  - Observemos tambien que en este ejemplo se ha creado un **validationService** para centralizar todas la validaciones
+- Lo que hace angular es mandar el própio **FormControl** a la función y a partir de ahí podemos hacer la validación que queramos utilizando el propio **value** del FormControl
+  ```javascript
+  noPuedeSerStrider(control: FormControl): ValidationErrors | null {
+      const value: string = control.value?.trim().toLowerCase();
+      if (value === 'strider') {
+        return {
+          noStrider: true,
+        };
+      } else {
+        return null;
+      }
+    }
+  ```
+- Hay que observar que la validación personalizada devuelve o u **validationError** o **null**
+- ValidationErrorn no es mas que un **objeto de tipo clave-valor**
+
+#### Validaciones a nivel de Formulario
+
+- Este tipo de validaciones son a nivel de formulario completo. Uno de sus usos puede ser validar un campo en relación a otro. Por ejemplo a la hora de validar que dos contraseñas sean iguales.
+- Para ello, en el objeto **miFormulario**, a la hora de crearlo utilizando el **FormBuilder** hay que pasar la validación como objeto **opciones** a continuación del objeto con los **formControls**:
+  ```javascript
+  miFormulario: FormGroup = this.fb.group(
+    {
+      password: ["", [Validators.required, Validators.minLenght(6)]],
+      password2: ["", Validators.required],
+    },
+    {
+      validators: [this.validacionService.camposIguales("password", "password2")],
+    }
+  );
+  ```
+- Observemos que una furnción validadora se le pasa como referencia y en este caso le estamos pasando argumentos a la función. Esto lo veremos mejor en el siguiente bloque de código. Ahí se puede observar que **esta función devuelve otra función** la cual recibirá como argumento el **Formulario completo** (AbstractControl) y devolverá a su vez un `validatioError` o `null`
+
+  ```javascript
+  camposIguales(campo1: string, campo2: string) {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      let pass1 = formGroup.get(campo1)?.value;
+      let pass2 = formGroup.get(campo2)?.value;
+
+      if (pass1 === pass2) {
+        formGroup.get(campo2)?.setErrors(null);
+        return null;
+      } else {
+        formGroup.get(campo2)?.setErrors({
+          sonIguales: false,
+        });
+        return { sonIguales: false };
+      }
+    };
+  }
+  ```
+
+- También podemos ver que en el código de arriba se está estableciendo error tanto a nivel de formulario completo como a nivel del campo del password2 en el caso de que no sean iguales `formGroup.get(campo2)?.setErrors({ sonIguales: false, });`
+
+## Validaciones Formularios Reactivos - Asíncronas
+
+- Es una validación normal y corriente pero en lugar de devolver un valor directamente, devuelve un observable o una promesa
+- En el caso de que esa validación asíncrona tenga que hacer uso de una petición http contra un backend, la cosa se complica algo. Pero básicamente seria crear un servicio para que a este se le inyecte el HttpClient y este servicio es el que realizará la validación (**Importante** acordarse de inyectar `import { HttpClientModule } from '@angular/common/http';` en el módulo principal)
+
+  ```javascript
+  import { Injectable } from '@angular/core';
+  import { HttpClient } from '@angular/common/http';
+  import { AbstractControl, AsyncValidator, ValidationErrors } from '@angular/forms';
+  import { delay, map, Observable } from 'rxjs';
+
+  @Injectable({
+    providedIn: 'root',
+  })
+  export class EmailValidatorService implements AsyncValidator {
+    constructor(private http: HttpClient) {}
+    validate(control: AbstractControl<any, any>): Observable<ValidationErrors | null> {
+      const email = control.value;
+      console.log(email);
+      return this.http.get<any[]>(`http://localhost:3000/usuarios?q=${email}`).pipe(
+        map((resp) => {
+          return resp.length === 0 ? null : { emailTomado: true };
+        }),
+        delay(1000)
+      );
+    }
+  }
+  ```
+
+#### Estado del formulario
+
+- A la hora de realizar validaciones asíncronas, angular nos proporciona una característica para ver el estatus del formulario. Esto se consigue mediante `miFormulario.status`.
+- Sus estados serán **VALID, INVALID, PENDING**
+
+#### Errores Personalizados
+
+- En los casos de que puedan suceder vários errores distintos en un mismo input, se puede gestionar el mensaje de error que aparecerá. Para ello a la hora de mostrar el mensaje si el formControl tiene algún error, lo que hay que hacer es vincular ese mensaje de error a un getter que nos maneje esa información
+
+  ```javascript
+  get emailErrorMsg(): string {
+    const error = this.miFormulario.get('email')?.errors;
+    if (error?.['required']) {
+      return 'el email es obligatorio';
+    } else if (error?.['pattern']) {
+      return 'el email no tiene el formato correcto';
+    } else if (error?.['emailTomado']) {
+      return 'el correo seleccionado ya se encuentra en uso';
+    }
+
+    return '';
+  }
+  ```

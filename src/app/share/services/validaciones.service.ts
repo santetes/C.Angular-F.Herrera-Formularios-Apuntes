@@ -35,8 +35,6 @@ export class ValidacionesService {
         });
         return { sonIguales: false };
       }
-
-      /*  return pass1 === pass2 ? null : { areDiferents: true }; */
     };
   }
 }
